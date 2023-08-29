@@ -7,18 +7,23 @@ import model.Transaction;
 import model.TransactionType;
 import service.AccountService;
 import service.TransactionService;
+import utils.TransactionManager;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static utils.constants.SqlQueryConstants.*;
 
 public class AccountServiceImpl implements AccountService {
 
     private final TransactionService transactionService = new TransactionServiceImpl();
+    private final Lock lock1 = new ReentrantLock();
+    private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
     private final Connection connection;
 
@@ -33,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void deposit(AccountDto accDto) {
         try {
+            lock1.lock();
             var preparedStatement = connection.prepareStatement(SQL_UPDATE_ACC_DEPOSIT);
             preparedStatement.setBigDecimal(1, accDto.getAmount());
             preparedStatement.setString(2, accDto.getAccTo());
@@ -40,8 +46,15 @@ public class AccountServiceImpl implements AccountService {
             if (preparedStatement.executeUpdate() == 1) System.out.println("Средства зачислены");
             else System.out.println("Счет не найден");
 
-            val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock1.unlock();
+        }
 
+        val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
+
+        try {
             if (isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
                 System.out.println("Транзакция сохранена\n");
 
@@ -68,6 +81,7 @@ public class AccountServiceImpl implements AccountService {
                 return;
             }
 
+            lock2.lock();
             preparedStatement = connection.prepareStatement(SQL_UPDATE_ACC_WITHDRAW);
             preparedStatement.setBigDecimal(1, accDto.getAmount());
             preparedStatement.setString(2, accDto.getAccFrom());
@@ -80,11 +94,43 @@ public class AccountServiceImpl implements AccountService {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            lock2.unlock();
         }
     }
 
     @Override
     public void transfer(AccountDto accDto) {
+        try {
+            lock1.lock();
+            lock2.lock();
+            isTransfer = true;
+            TransactionManager.startTransaction(connection);
+            withdraw(accDto);
+            deposit(accDto);
+            TransactionManager.commitTransaction(connection);
+
+        } catch (SQLException e) {
+            try {
+                TransactionManager.rollbackTransaction(connection);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        } finally {
+            isTransfer = false;
+            lock1.unlock();
+            lock2.unlock();
+        }
+
+        val transaction = buildTransaction(accDto, TransactionType.TRANSFER);
+
+        try {
+            if (transactionService.saveTransaction(transaction, connection) == 1)
+                System.out.println("Транзакция сохранена\n");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -99,4 +145,3 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 }
-
