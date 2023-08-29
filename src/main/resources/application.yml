@@ -1,0 +1,4 @@
+username: postgres
+password: 123
+url: jdbc:postgresql://localhost:5432/cleverbank
+driver: org.postgresql.Driver

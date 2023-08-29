@@ -9,7 +9,17 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set("postgresqlVersion", "42.2.27")
+    set("c3p0Version", "0.9.2.1")
+}
+
 dependencies {
+
+    implementation("org.postgresql:postgresql:${postgresqlVersion}")
+    implementation("com.mchange:c3p0:${c3p0Version}")
+
+
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
