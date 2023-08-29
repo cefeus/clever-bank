@@ -13,9 +13,9 @@ import java.util.UUID;
 @Builder
 public class Transaction {
     private UUID id;
-    private String fromAcc;
-    private String toAcc;
+    private String accFrom;
+    private String accTo;
     private String type;
-    private Timestamp createdAt;
     private BigDecimal amount;
+    private Timestamp createdAt;
 }
