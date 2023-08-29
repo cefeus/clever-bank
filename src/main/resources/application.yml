@@ -1,4 +1,9 @@
+#db
 username: postgres
 password: 123
 url: jdbc:postgresql://localhost:5432/cleverbank
 driver: org.postgresql.Driver
+
+
+#error-info
+INCORRECT_ACC_NUMBER: "Incorrect format of account number: %s"
