@@ -1,7 +1,13 @@
+import dto.AccountDto;
+import lombok.val;
+import service.AccountService;
+import service.impl.AccountServiceImpl;
+
 import java.util.Scanner;
 
 public class AppMenu {
     private final Scanner sc = new Scanner(System.in);
+    private final AccountService accService = new AccountServiceImpl();
     private int choice = -1;
 
     public void start() {
@@ -32,11 +38,28 @@ public class AppMenu {
 
         choice = sc.nextInt();
 
+        val accDto = getAccDto(choice);
+
         switch (choice) {
-            case 1 -> //TODO accService.deposit(accDto);
-            case 2 -> //TODO accService.withdraw(accDto);
-            case 3 -> //TODO accService.transfer(accDto);
+            case 1 -> accService.deposit(accDto);
+            case 2 -> accService.withdraw(accDto);
+            case 3 -> accService.transfer(accDto);
             default -> System.out.println("Неверный ввод");
         }
+    }
+
+    public AccountDto getAccDto(int choice) {
+
+        System.out.println("Номер первого счета:\n");
+        val number = sc.next();
+        System.out.println("Введите сумму:\n");
+        val amount = sc.nextBigDecimal();
+
+        var accDto = new AccountDto(number, amount);
+        if (choice > 2) {
+            System.out.println("Номер второго счета:\n");
+            accDto.setAccTo(sc.next());
+        }
+        return accDto;
     }
 }
