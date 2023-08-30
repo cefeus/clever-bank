@@ -9,6 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(of = "number")
 public class Account {
     private String number;

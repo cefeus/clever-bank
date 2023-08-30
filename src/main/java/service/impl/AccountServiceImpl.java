@@ -2,8 +2,10 @@ package service.impl;
 
 import config.db.ConnectionSingleton;
 import dto.AccountDto;
+import exception.AccountNotFoundException;
 import exception.ValidationException;
 import lombok.val;
+import model.Account;
 import model.Transaction;
 import model.TransactionType;
 import repository.AccountRepo;
@@ -12,25 +14,23 @@ import service.TransactionService;
 import utils.TransactionManager;
 import validator.AccountValidator;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static config.db.ConnectionSingleton.connection;
-import static utils.constants.SqlQueryConstants.*;
+import static utils.constants.SqlQueryConstants.SQL_GET_BALANCE_BY_NUMBER;
 
 public class AccountServiceImpl implements AccountService {
-
+    private final TransactionManager transactionManager = new TransactionManager();
     private final AccountValidator accValidator = new AccountValidator();
     private final TransactionService transactionService = new TransactionServiceImpl();
     private final AccountRepo accountRepo = new AccountRepo();
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
+
 
     @Override
     public void deposit(AccountDto accDto) {
@@ -44,34 +44,22 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             lock1.lock();
-            if(accountRepo.update(accDto))
-                System.out.println("OK");
-            else
-                System.out.println("NO OK");
+            var storedAcc = accountRepo.findAccByNumber(accDto.getAccTo())
+                    .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
+            storedAcc.setBalance(storedAcc.getBalance().add(accDto.getAmount()));
+            accountRepo.updateAccBalance(storedAcc);
+            System.out.println("Средства зачислены");
 
+            val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
 
-            var preparedStatement = connection.prepareStatement(SQL_UPDATE_ACC_DEPOSIT);
-            preparedStatement.setBigDecimal(1, accDto.getAmount());
-            preparedStatement.setString(2, accDto.getAccTo());
-
-            if (preparedStatement.executeUpdate() == 1) System.out.println("Средства зачислены");
-            else System.out.println("Счет не найден");
+            if (!isTransfer && transactionService.saveTransaction(transaction) == 1)
+                System.out.println("Транзакция сохранена\n");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             lock1.unlock();
-        }
-
-        val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
-
-        try {
-            if (!isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
-                System.out.println("Транзакция сохранена\n");
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
 
     }
@@ -87,29 +75,20 @@ public class AccountServiceImpl implements AccountService {
         }
 
         try {
-            var preparedStatement = connection.prepareStatement(SQL_GET_BALANCE_BY_NUMBER);
-            preparedStatement.setString(1, accDto.getAccFrom());
-            ResultSet re = preparedStatement.executeQuery();
+            lock2.lock();
+            var storedAcc = accountRepo.findAccByNumber(accDto.getAccFrom())
+                    .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
-            if (re.next()) {
-                if (accDto.getAmount().compareTo(re.getBigDecimal("balance")) > 0) {
-                    System.out.println("Недостаточно средств на счете");
-                    return;
-                }
-            } else {
-                System.out.println("Счет не найден");
+            if (accDto.getAmount().compareTo(storedAcc.getBalance()) > 0) {
+                System.out.println("Недостаточно средств на счете");
                 return;
             }
-
-            lock2.lock();
-            preparedStatement = connection.prepareStatement(SQL_UPDATE_ACC_WITHDRAW);
-            preparedStatement.setBigDecimal(1, accDto.getAmount());
-            preparedStatement.setString(2, accDto.getAccFrom());
-            preparedStatement.executeUpdate();
+            storedAcc.setBalance(storedAcc.getBalance().subtract(accDto.getAmount()));
+            accountRepo.updateAccBalance(storedAcc);
 
             val transaction = buildTransaction(accDto, TransactionType.WITHDRAW);
 
-            if (!isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction) == 1)
                 System.out.println("Транзакция сохранена\n");
 
         } catch (SQLException e) {
@@ -131,16 +110,16 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             lock1.lock();
-            lock2.lock();
+            lock2.lock();  //TODO ALARM
             isTransfer = true;
-            TransactionManager.startTransaction(connection);
+            transactionManager.startTransaction();
             withdraw(accDto);
             deposit(accDto);
-            TransactionManager.commitTransaction(connection);
+            transactionManager.commitTransaction();
 
-        } catch (SQLException e) {
+        } catch (RuntimeException | SQLException e) {
             try {
-                TransactionManager.rollbackTransaction(connection);
+                transactionManager.rollbackTransaction();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -154,13 +133,15 @@ public class AccountServiceImpl implements AccountService {
         val transaction = buildTransaction(accDto, TransactionType.TRANSFER);
 
         try {
-            if (transactionService.saveTransaction(transaction, connection) == 1)
+            if (transactionService.saveTransaction(transaction) == 1)
                 System.out.println("Транзакция сохранена\n");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
+
+
 
     private Transaction buildTransaction(AccountDto accDto, TransactionType type) {
         return Transaction.builder()

@@ -6,5 +6,5 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface TransactionService {
-    int saveTransaction(Transaction transaction, Connection connection) throws SQLException;
+    int saveTransaction(Transaction transaction) throws SQLException;
 }
