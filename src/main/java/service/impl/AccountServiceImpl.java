@@ -67,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
         val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
 
         try {
-            if (isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
                 System.out.println("Транзакция сохранена\n");
 
         } catch (SQLException e) {
@@ -110,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
 
             val transaction = buildTransaction(accDto, TransactionType.WITHDRAW);
 
-            if (isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
                 System.out.println("Транзакция сохранена\n");
 
         } catch (SQLException e) {

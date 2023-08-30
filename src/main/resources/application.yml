@@ -7,3 +7,4 @@ driver: org.postgresql.Driver
 
 #error-info
 INCORRECT_ACC_NUMBER: "Incorrect format of account number: %s"
+INCORRECT_ACC_AMOUNT: "Incorrect amount(should be greater than 0): %s"

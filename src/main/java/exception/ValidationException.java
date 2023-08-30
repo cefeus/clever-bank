@@ -3,12 +3,14 @@ package exception;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Set;
+
 @Getter
 public class ValidationException extends RuntimeException{
 
-    private List<String> exceptionMessages;
+    private Set<String> exceptionMessages;
 
-    public ValidationException(List<String> exceptionMessages) {
+    public ValidationException(Set<String> exceptionMessages) {
         this.exceptionMessages = exceptionMessages;
     }
 }

@@ -1,5 +1,7 @@
+import com.mchange.v2.lang.StringUtils;
 import dto.AccountDto;
 import lombok.val;
+import org.apache.logging.log4j.util.Strings;
 import service.AccountService;
 import service.impl.AccountServiceImpl;
 
@@ -8,7 +10,7 @@ import java.util.Scanner;
 public class AppMenu {
     private final Scanner sc = new Scanner(System.in);
     private final AccountService accService = new AccountServiceImpl();
-    private int choice = -1;
+    private String choice = Strings.EMPTY;
 
     public void start() {
         while (true) {
@@ -20,11 +22,11 @@ public class AppMenu {
             System.out.println("3. Exit.");
             System.out.print("\nEnter your choice: ");
 
-            choice = sc.nextInt();
+            choice = sc.next();
 
             switch (choice) {
-                case 1 -> accOperations();
-                case 2 -> System.out.println("Second case");
+                case "1" -> accOperations();
+                case "2" -> System.out.println("Second case");
                 default -> System.out.println("Wrong input\n");
             }
         }
@@ -36,19 +38,19 @@ public class AppMenu {
         System.out.println("2. Снятие средств\n");
         System.out.println("3. Перевод на другой счет\n");
 
-        choice = sc.nextInt();
+        choice = sc.next();
 
         val accDto = getAccDto(choice);
 
         switch (choice) {
-            case 1 -> accService.deposit(accDto);
-            case 2 -> accService.withdraw(accDto);
-            case 3 -> accService.transfer(accDto);
+            case "1" -> accService.deposit(accDto);
+            case "2" -> accService.withdraw(accDto);
+            case "3" -> accService.transfer(accDto);
             default -> System.out.println("Неверный ввод");
         }
     }
 
-    public AccountDto getAccDto(int choice) {
+    public AccountDto getAccDto(String choice) {
 
         System.out.println("Номер первого счета:\n");
         val number = sc.next();
@@ -56,7 +58,7 @@ public class AppMenu {
         val amount = sc.nextBigDecimal();
 
         var accDto = new AccountDto(number, amount);
-        if (choice > 2) {
+        if (Integer.parseInt(choice) > 2) {
             System.out.println("Номер второго счета:\n");
             accDto.setAccTo(sc.next());
         }

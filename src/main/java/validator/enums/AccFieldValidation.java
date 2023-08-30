@@ -7,6 +7,8 @@ import utils.PropertiesUtil;
 import validator.AccountValidator;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static utils.constants.ExceptionMessagesConstants.INCORRECT_ACC_NUMBER;
@@ -16,14 +18,15 @@ public enum AccFieldValidation {
     NUMBER(AccountValidator::validateNumber),
     AMOUNT(AccountValidator::validateAmount);
 
-    private final TriConsumer<AccountValidator, AccountDto, List<String>> consumer;
+    private final TriConsumer<AccountValidator, AccountDto, Set<String>> consumer;
 
-    AccFieldValidation(TriConsumer<AccountValidator, AccountDto, List<String>> consumer){
+    AccFieldValidation(TriConsumer<AccountValidator, AccountDto, Set<String>> consumer){
         this.consumer = consumer;
     }
 
-    public void consume(AccountValidator validator, AccountDto accDto, List<String> messages){
+    public void consume(AccountValidator validator, AccountDto accDto, Set<String> messages){
         consumer.accept(validator, accDto, messages);
     }
 
 }
+
