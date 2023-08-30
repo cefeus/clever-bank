@@ -6,6 +6,7 @@ import exception.ValidationException;
 import lombok.val;
 import model.Transaction;
 import model.TransactionType;
+import repository.AccountRepo;
 import service.AccountService;
 import service.TransactionService;
 import utils.TransactionManager;
@@ -19,24 +20,17 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static config.db.ConnectionSingleton.connection;
 import static utils.constants.SqlQueryConstants.*;
 
 public class AccountServiceImpl implements AccountService {
 
     private final AccountValidator accValidator = new AccountValidator();
     private final TransactionService transactionService = new TransactionServiceImpl();
+    private final AccountRepo accountRepo = new AccountRepo();
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
-    private final Connection connection;
-
-    {
-        try {
-            connection = ConnectionSingleton.getConnection().open();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public void deposit(AccountDto accDto) {
@@ -50,6 +44,13 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             lock1.lock();
+            if(accountRepo.update(accDto))
+                System.out.println("OK");
+            else
+                System.out.println("NO OK");
+
+
+
             var preparedStatement = connection.prepareStatement(SQL_UPDATE_ACC_DEPOSIT);
             preparedStatement.setBigDecimal(1, accDto.getAmount());
             preparedStatement.setString(2, accDto.getAccTo());
