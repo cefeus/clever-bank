@@ -40,13 +40,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deposit(AccountDto accDto) {
-
         try {
             accValidator.validate(accDto);
-        } catch (ValidationException exception){
+        } catch (ValidationException exception) {
             exception.getExceptionMessages()
                     .forEach(System.out::println);
-            //return
+            return;
         }
 
         try {
@@ -78,13 +77,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void withdraw(AccountDto accDto) {
-
         try {
             accValidator.validate(accDto);
-        } catch (ValidationException exception){
+        } catch (ValidationException exception) {
             exception.getExceptionMessages()
                     .forEach(System.out::println);
-            //return
+            return;
         }
 
         try {
@@ -122,13 +120,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void transfer(AccountDto accDto) {
-
         try {
             accValidator.validate(accDto);
-        } catch (ValidationException exception){
+        } catch (ValidationException exception) {
             exception.getExceptionMessages()
                     .forEach(System.out::println);
-            //return
+            return;
         }
 
         try {

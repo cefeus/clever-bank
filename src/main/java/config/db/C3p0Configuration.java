@@ -30,9 +30,11 @@ public class C3p0Configuration {
             throw new RuntimeException(e);
         }
     }
+
     public Connection open() throws SQLException {
         return connPool.getConnection();
     }
+
     public void close() {
         connPool.close();
     }

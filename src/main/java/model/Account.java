@@ -11,10 +11,8 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode(of = "number")
 public class Account {
-
     private String number;
     private UUID ownerId;
     private BigDecimal balance;
     private Long bankId;
-
 }
