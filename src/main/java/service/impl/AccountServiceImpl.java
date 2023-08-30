@@ -2,12 +2,14 @@ package service.impl;
 
 import config.db.ConnectionSingleton;
 import dto.AccountDto;
+import exception.ValidationException;
 import lombok.val;
 import model.Transaction;
 import model.TransactionType;
 import service.AccountService;
 import service.TransactionService;
 import utils.TransactionManager;
+import validator.AccountValidator;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -21,6 +23,7 @@ import static utils.constants.SqlQueryConstants.*;
 
 public class AccountServiceImpl implements AccountService {
 
+    private final AccountValidator accValidator = new AccountValidator();
     private final TransactionService transactionService = new TransactionServiceImpl();
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
@@ -37,6 +40,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deposit(AccountDto accDto) {
+        try {
+            accValidator.validate(accDto);
+        } catch (ValidationException exception) {
+            exception.getExceptionMessages()
+                    .forEach(System.out::println);
+            return;
+        }
+
         try {
             lock1.lock();
             var preparedStatement = connection.prepareStatement(SQL_UPDATE_ACC_DEPOSIT);
@@ -55,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
         val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
 
         try {
-            if (isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
                 System.out.println("Транзакция сохранена\n");
 
         } catch (SQLException e) {
@@ -66,6 +77,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void withdraw(AccountDto accDto) {
+        try {
+            accValidator.validate(accDto);
+        } catch (ValidationException exception) {
+            exception.getExceptionMessages()
+                    .forEach(System.out::println);
+            return;
+        }
+
         try {
             var preparedStatement = connection.prepareStatement(SQL_GET_BALANCE_BY_NUMBER);
             preparedStatement.setString(1, accDto.getAccFrom());
@@ -89,7 +108,7 @@ public class AccountServiceImpl implements AccountService {
 
             val transaction = buildTransaction(accDto, TransactionType.WITHDRAW);
 
-            if (isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction, connection) == 1)
                 System.out.println("Транзакция сохранена\n");
 
         } catch (SQLException e) {
@@ -101,6 +120,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void transfer(AccountDto accDto) {
+        try {
+            accValidator.validate(accDto);
+        } catch (ValidationException exception) {
+            exception.getExceptionMessages()
+                    .forEach(System.out::println);
+            return;
+        }
+
         try {
             lock1.lock();
             lock2.lock();

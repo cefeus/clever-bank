@@ -4,7 +4,6 @@ import model.Transaction;
 import service.TransactionService;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import static utils.constants.SqlQueryConstants.SQL_SAVE_TRANSACTION;
