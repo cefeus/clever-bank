@@ -4,7 +4,6 @@ import config.db.ConnectionSingleton;
 import model.Account;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -28,8 +27,7 @@ public class AccountRepo {
         try (var statement = connection.prepareStatement(
                 SQL_GET_ACC_BY_NUMBER,
                 ResultSet.TYPE_SCROLL_SENSITIVE,
-                ResultSet.CONCUR_UPDATABLE))
-        {
+                ResultSet.CONCUR_UPDATABLE)) {
             statement.setString(1, number);
             try (var rs = statement.executeQuery()) {
                 return rs.first()
@@ -41,6 +39,7 @@ public class AccountRepo {
             throw new RuntimeException(ex);
         }
     }
+
     public int updateAccBalance(Account acc) throws SQLException {
         try (var statement = connection.prepareStatement(SQL_UPDATE_ACC_BALANCE)) {
             statement.setBigDecimal(1, acc.getBalance());

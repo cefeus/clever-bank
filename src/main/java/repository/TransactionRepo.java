@@ -18,7 +18,6 @@ public class TransactionRepo {
             throw new RuntimeException(e);
         }
     }
-
     public int saveTransaction(Transaction transaction) throws SQLException {
         try (var statement = connection.prepareStatement(SQL_SAVE_TRANSACTION)) {
             statement.setString(1, transaction.getAccFrom());
@@ -29,5 +28,4 @@ public class TransactionRepo {
             return statement.executeUpdate();
         }
     }
-
 }

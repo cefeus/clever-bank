@@ -1,11 +1,9 @@
 package service.impl;
 
-import config.db.ConnectionSingleton;
 import dto.AccountDto;
 import exception.AccountNotFoundException;
 import exception.ValidationException;
 import lombok.val;
-import model.Account;
 import model.Transaction;
 import model.TransactionType;
 import repository.AccountRepo;
@@ -14,13 +12,11 @@ import service.TransactionService;
 import utils.TransactionManager;
 import validator.AccountValidator;
 
-import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static utils.constants.SqlQueryConstants.SQL_GET_BALANCE_BY_NUMBER;
 
 public class AccountServiceImpl implements AccountService {
     private final TransactionManager transactionManager = new TransactionManager();
@@ -30,7 +26,6 @@ public class AccountServiceImpl implements AccountService {
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
-
 
     @Override
     public void deposit(AccountDto accDto) {
@@ -117,6 +112,11 @@ public class AccountServiceImpl implements AccountService {
             deposit(accDto);
             transactionManager.commitTransaction();
 
+            val transaction = buildTransaction(accDto, TransactionType.TRANSFER);
+
+            if (transactionService.saveTransaction(transaction) == 1)
+                System.out.println("Транзакция сохранена\n");
+
         } catch (RuntimeException | SQLException e) {
             try {
                 transactionManager.rollbackTransaction();
@@ -130,18 +130,7 @@ public class AccountServiceImpl implements AccountService {
             lock2.unlock();
         }
 
-        val transaction = buildTransaction(accDto, TransactionType.TRANSFER);
-
-        try {
-            if (transactionService.saveTransaction(transaction) == 1)
-                System.out.println("Транзакция сохранена\n");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
     }
-
-
 
     private Transaction buildTransaction(AccountDto accDto, TransactionType type) {
         return Transaction.builder()

@@ -4,14 +4,12 @@ import model.Transaction;
 import repository.TransactionRepo;
 import service.TransactionService;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-
-import static utils.constants.SqlQueryConstants.SQL_SAVE_TRANSACTION;
 
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepo transactionRepo = new TransactionRepo();
+
     @Override
     public int saveTransaction(Transaction transaction) throws SQLException {
         return transactionRepo.saveTransaction(transaction);
