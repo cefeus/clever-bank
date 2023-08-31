@@ -7,12 +7,9 @@ import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class C3p0Configuration {
-    private final String URL = "url";
-    private final String USERNAME = "username";
-    private final String PASSWORD = "password";
-    private final String DRIVER = "driver";
+import static utils.constants.DatabaseConstants.*;
 
+public class C3p0Configuration {
     private final ComboPooledDataSource connPool;
 
     public C3p0Configuration() {
