@@ -20,6 +20,7 @@ public class PropertiesUtil {
             e.printStackTrace();
         }
     }
+
     public static String getPropertyByKey(String key) {
         return PROP.getProperty(key);
     }
