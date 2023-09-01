@@ -23,7 +23,8 @@ public class StatementServiceImpl implements StatementService {
         }
     }
 
-    public void createMoneyStatement() {} //TODO ALARM
+    public void createMoneyStatement() {
+    } //TODO ALARM
     // транзакции: дата, тип, от кого, сумма со знаком
 
 

@@ -2,8 +2,8 @@ import dto.AccountDto;
 import lombok.val;
 import org.apache.logging.log4j.util.Strings;
 import service.AccountService;
-import service.impl.StatementServiceImpl;
 import service.impl.AccountServiceImpl;
+import service.impl.StatementServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -54,15 +54,9 @@ public class AppMenu {
         LocalDate end = LocalDate.now();
 
         switch (choice) {
-            case "1" -> {
-                start = end.minusMonths(1);
-            }
-            case "2" -> {
-                start = end.minusYears(1);
-            }
-            case "3" -> {
-                start = LocalDate.MAX;
-            }
+            case "1" -> start = end.minusMonths(1);
+            case "2" -> start = end.minusYears(1);
+            case "3" -> start = LocalDate.MAX;
             default -> {
                 return;
             }

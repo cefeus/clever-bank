@@ -1,9 +1,9 @@
 package dto;
 
-import model.Transaction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import model.Transaction;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

@@ -32,9 +32,10 @@ public class PdfServiseImpl {
 
     public void formCheck(Transaction transaction) {
         output = buildCheque(transaction);
-        path = String.format(CheckConstants.CHECK_PATH,new Timestamp(System.currentTimeMillis()));
+        path = String.format(CheckConstants.CHECK_PATH, new Timestamp(System.currentTimeMillis()));
         fileWriter(path, output);
     }
+
     private void fileWriter(String path, String text) {
         Document doc = new Document();
         Font font = FontFactory.getFont(CheckConstants.FONT_PATH, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
