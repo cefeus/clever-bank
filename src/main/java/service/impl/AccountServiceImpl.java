@@ -6,7 +6,7 @@ import exception.ValidationException;
 import lombok.val;
 import model.Transaction;
 import model.TransactionType;
-import repository.AccountRepo;
+import repository.impl.AccountRepoImpl;
 import service.AccountService;
 import service.TransactionService;
 import utils.TransactionManager;
@@ -22,7 +22,8 @@ public class AccountServiceImpl implements AccountService {
     private final TransactionManager transactionManager = new TransactionManager();
     private final AccountValidator accValidator = new AccountValidator();
     private final TransactionService transactionService = new TransactionServiceImpl();
-    private final AccountRepo accountRepo = new AccountRepo();
+    private final AccountRepoImpl accountRepo = new AccountRepoImpl();
+    private final PdfServiseImpl pdf = new PdfServiseImpl();
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
@@ -48,9 +49,10 @@ public class AccountServiceImpl implements AccountService {
 
             val transaction = buildTransaction(accDto, TransactionType.DEPOSIT);
 
-            if (!isTransfer && transactionService.saveTransaction(transaction) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction) == 1) {
                 System.out.println("Транзакция сохранена\n");
-
+                pdf.formCheck(transaction);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -83,9 +85,10 @@ public class AccountServiceImpl implements AccountService {
 
             val transaction = buildTransaction(accDto, TransactionType.WITHDRAW);
 
-            if (!isTransfer && transactionService.saveTransaction(transaction) == 1)
+            if (!isTransfer && transactionService.saveTransaction(transaction) == 1) {
                 System.out.println("Транзакция сохранена\n");
-
+                pdf.formCheck(transaction);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -114,9 +117,10 @@ public class AccountServiceImpl implements AccountService {
 
             val transaction = buildTransaction(accDto, TransactionType.TRANSFER);
 
-            if (transactionService.saveTransaction(transaction) == 1)
+            if (transactionService.saveTransaction(transaction) == 1) {
                 System.out.println("Транзакция сохранена\n");
-
+                pdf.formCheck(transaction);
+            }
         } catch (RuntimeException | SQLException e) {
             try {
                 transactionManager.rollbackTransaction();
