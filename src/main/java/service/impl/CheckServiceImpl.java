@@ -13,9 +13,8 @@ import utils.constants.CheckConstants;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
-import static utils.constants.CheckConstants.CHECK_TEMPLATE;
+import static utils.constants.CheckConstants.CHECK_TEMPLATE_ENG;
 
 public class CheckServiceImpl implements CheckService {
 
@@ -25,9 +24,8 @@ public class CheckServiceImpl implements CheckService {
     @Override
     public void formCheck(Transaction transaction) {
         val check = buildCheck(transaction);
-        String name = "121ads";
-        DateTimeFormatter frmtr = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
-        val path = String.format(CheckConstants.CHECK_PATH, name);
+        DateTimeFormatter frmtr = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        val path = String.format(CheckConstants.CHECK_PATH, LocalDateTime.now().format(frmtr));
         pdfService.formPdf(check, path);
     }
 
@@ -47,8 +45,8 @@ public class CheckServiceImpl implements CheckService {
                     .orElseThrow(() -> new BankNotFoundException("Bank not found"));
         }
         return String.format(
-                CHECK_TEMPLATE,
-                transaction.getId(),
+                CHECK_TEMPLATE_ENG,
+                transaction.getId().toString(),
                 transaction.getCreatedAt().toLocalDateTime(),
                 transaction.getCreatedAt(),
                 transaction.getType(),

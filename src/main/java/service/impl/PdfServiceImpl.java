@@ -14,7 +14,7 @@ public class PdfServiceImpl implements PdfService {
     @Override
     public void formPdf(String text, String path) {
         var doc = new Document();
-        Font font = FontFactory.getFont(FONT_PATH, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        Font font = FontFactory.getFont(FONT_PATH, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10);
 
         try (var fileOuputStream = new FileOutputStream(path)) {
             PdfWriter.getInstance(doc, fileOuputStream);

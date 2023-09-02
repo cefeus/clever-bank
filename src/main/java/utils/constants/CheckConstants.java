@@ -4,7 +4,20 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CheckConstants {
-    public static String CHECK_TEMPLATE = """
+    public static String CHECK_TEMPLATE_ENG = """
+            —————————————————————————————|
+            |                                Bank check                            |
+            |Check:%44s|
+            |%-24s%40tT|
+            |Transaction type:%59s |
+            |Senders bank:%63s |
+            |Receivers bank:%60s |
+            |Senders account:%35s |
+            |Receivers account:%32s | 
+            |Amount:%66.2f BYN |
+            |——————————————————————————|  
+            """;
+    public static String CHECK_TEMPLATE_RU = """
             ——————————————————————————————————————————————————
             |                 Áàíêîâñêèé ÷åê                 |
             |×åê:%44s|
@@ -27,7 +40,7 @@ public class CheckConstants {
             Äàòà è âðåìÿ ôîðìèðîâàíèÿ  | %-10s  %-10s
             Îñòàòîê                    | %-20.2f BYN
             """;
-    public static String STATEMENT_PATH = "statement/%s_%s.pdf";
-    public static String MONEY_STATEMENT_PATH = "";
-    public static String FONT_PATH = "fonts/courier-new.ttf";
+    public static String STATEMENT_PATH = "statement/%s.pdf";
+    public static String MONEY_STATEMENT_PATH = "money-statement/%s.pdf";
+    public static String FONT_PATH = "fonts/er-kurier-1251.ttf";
 }
