@@ -8,6 +8,7 @@ import model.Transaction;
 import model.TransactionType;
 import repository.AccountRepo;
 import service.AccountService;
+import service.CheckService;
 import service.TransactionService;
 import utils.TransactionManager;
 import validator.AccountValidator;
@@ -22,6 +23,7 @@ public class AccountServiceImpl implements AccountService {
     private final TransactionManager transactionManager = new TransactionManager();
     private final AccountValidator accValidator = new AccountValidator();
     private final TransactionService transactionService = new TransactionServiceImpl();
+    private final CheckService checkService = new CheckServiceImpl();
     private final AccountRepo accountRepo = new AccountRepo();
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
@@ -50,6 +52,8 @@ public class AccountServiceImpl implements AccountService {
 
             if (!isTransfer && transactionService.saveTransaction(transaction) == 1)
                 System.out.println("Транзакция сохранена\n");
+
+            checkService.formCheck(transaction);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -86,6 +90,7 @@ public class AccountServiceImpl implements AccountService {
             if (!isTransfer && transactionService.saveTransaction(transaction) == 1)
                 System.out.println("Транзакция сохранена\n");
 
+            checkService.formCheck(transaction);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -117,6 +122,7 @@ public class AccountServiceImpl implements AccountService {
             if (transactionService.saveTransaction(transaction) == 1)
                 System.out.println("Транзакция сохранена\n");
 
+            checkService.formCheck(transaction);
         } catch (RuntimeException | SQLException e) {
             try {
                 transactionManager.rollbackTransaction();

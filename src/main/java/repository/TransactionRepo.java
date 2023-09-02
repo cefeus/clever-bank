@@ -20,11 +20,12 @@ public class TransactionRepo {
     }
     public int saveTransaction(Transaction transaction) throws SQLException {
         try (var statement = connection.prepareStatement(SQL_SAVE_TRANSACTION)) {
-            statement.setString(1, transaction.getAccFrom());
-            statement.setString(2, transaction.getAccTo());
-            statement.setString(3, transaction.getType());
-            statement.setBigDecimal(4, transaction.getAmount());
-            statement.setTimestamp(5, transaction.getCreatedAt());
+            statement.setObject(1, transaction.getId());
+            statement.setString(2, transaction.getAccFrom());
+            statement.setString(3, transaction.getAccTo());
+            statement.setString(4, transaction.getType());
+            statement.setBigDecimal(5, transaction.getAmount());
+            statement.setTimestamp(6, transaction.getCreatedAt());
             return statement.executeUpdate();
         }
     }
