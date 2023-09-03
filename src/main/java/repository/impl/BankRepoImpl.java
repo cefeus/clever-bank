@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import static utils.constants.SqlQueryConstants.SQL_GET_BANK_BY_ACC_NUMBER;
+import static utils.constants.SqlQueryConstants.SQL_GET_BANK_BY_ID;
 
 public class BankRepoImpl implements BankRepo {
 
@@ -41,7 +42,7 @@ public class BankRepoImpl implements BankRepo {
 
     @Override
     public Optional<Bank> findBankById(Long id) {
-        try (var statement = connection.prepareStatement(SQL_GET_BANK_BY_ACC_NUMBER,
+        try (var statement = connection.prepareStatement(SQL_GET_BANK_BY_ID,
                 ResultSet.TYPE_SCROLL_SENSITIVE,
                 ResultSet.CONCUR_UPDATABLE)) {
             statement.setLong(1, id);

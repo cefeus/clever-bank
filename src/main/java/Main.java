@@ -8,6 +8,5 @@ public class Main {
         val appMenu = new AppMenu();
         flywayConfig.flywayTemplate().migrate();
         appMenu.start();
-        System.out.println("Привает");
     }
 }

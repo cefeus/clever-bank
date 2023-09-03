@@ -8,7 +8,6 @@ import java.sql.Savepoint;
 
 public class TransactionManager {
     private static Savepoint savepoint;
-
     private final Connection connection;
 
     {

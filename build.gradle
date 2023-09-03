@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'war'
 }
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
+
+war {
+    archiveFileName = "clever-bank.war"
+}
 
 repositories {
     mavenCentral()
@@ -18,6 +23,7 @@ ext {
     set("apacheLoggingLog4j", "2.19.0")
     set("flywayCoreVersion", "9.21.1")
     set("itextPdfVersion", "5.5.13.3")
+    set("jakartaServletVersion", "6.0.0")
 }
 
 dependencies {
@@ -36,6 +42,8 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:${apacheCommonsLangVersion}")
     implementation("com.itextpdf:itextpdf:${itextPdfVersion}")
 
+    //servlets
+    compileOnly("jakarta.servlet:jakarta.servlet-api:${jakartaServletVersion}")
 
     //test
     testImplementation platform('org.junit:junit-bom:5.9.1')

@@ -7,6 +7,7 @@ import lombok.val;
 import model.Transaction;
 import model.TransactionType;
 import repository.AccountRepo;
+import repository.impl.AccountRepoImpl;
 import service.AccountService;
 import service.CheckService;
 import service.TransactionService;
@@ -24,7 +25,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountValidator accValidator = new AccountValidator();
     private final TransactionService transactionService = new TransactionServiceImpl();
     private final CheckService checkService = new CheckServiceImpl();
-    private final AccountRepo accountRepo = new AccountRepo();
+    private final AccountRepo accountRepo = new AccountRepoImpl();
     private final Lock lock1 = new ReentrantLock();
     private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
@@ -91,6 +92,7 @@ public class AccountServiceImpl implements AccountService {
                 System.out.println("Транзакция сохранена\n");
 
             checkService.formCheck(transaction);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -123,6 +125,7 @@ public class AccountServiceImpl implements AccountService {
                 System.out.println("Транзакция сохранена\n");
 
             checkService.formCheck(transaction);
+
         } catch (RuntimeException | SQLException e) {
             try {
                 transactionManager.rollbackTransaction();
@@ -143,7 +146,7 @@ public class AccountServiceImpl implements AccountService {
                 .id(UUID.randomUUID())
                 .accFrom(accDto.getAccFrom())
                 .accTo(accDto.getAccTo())
-                .type(type.toString())
+                .type(Enum.valueOf(TransactionType.class, type.toString()))
                 .amount(accDto.getAmount())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();

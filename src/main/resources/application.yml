@@ -3,7 +3,7 @@ USERNAME: postgres
 PASSWORD: 123
 URL: jdbc:postgresql://localhost:5432/cleverbank
 DRIVER: org.postgresql.Driver
-SCHEMA: test
+SCHEMA: clever_bank
 
 #flyway
 MIGRATION_LOCATION: filesystem:src/main/resources/db/migration
