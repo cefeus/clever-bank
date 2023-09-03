@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CheckConstants {
+    public static final String CURRENT_DIR = System.getProperty("user.dir");
     public static String CHECK_TEMPLATE_ENG = """
             —————————————————————————————|
             |                                Bank check                            |
@@ -30,7 +31,7 @@ public class CheckConstants {
             |Сумма:%38.2f BYN|
             |————————————————————————————————————————————————|  
             """;
-    public static String CHECK_PATH = System.getProperty("user.dir") + "/check/%s.txt";
+    public static String CHECK_PATH = CURRENT_DIR + "/check/%s.txt";
     public static String TRANSFER_FROM = "Перевод от ";
     public static String TRANSFER_TO = "Перевод ";
     public static String TRANSACTION_STATEMENT_TEMPLATE_HEADER = """
@@ -44,11 +45,15 @@ public class CheckConstants {
             Дата и время формирования  | %-10s 
             Остаток                    | %-10.2f BYN
             """;
-    public static String TRANSACTION_STATEMENT_TEMPLATE_BODY = """
+    public static String TRANSACTION_HISTORY_STATEMENT_TEMPLATE_BODY = """
                  Дата      |          Примечани                     |     Количество     
             -----------------------------------------------------------------------------
             """;
+    public static String MONEY_FLOW_STATEMENT_TEMPLATE_BODY = """
+                  Приход      |      Уход      
+            -------------------------------------
+            """;
     public static String TRANSACTION_STATEMENT_TEMPLATE_FOOTER = "%15s|%40s|%15S";
-    public static String STATEMENT_PATH = System.getProperty("user.dir") + "/statement/%s.txt";
-    public static String MONEY_STATEMENT_PATH = "money-statement/%s.txt";
+    public static String MONEY_FLOW_STATEMENT_TEMPLATE_FOOTER = "%15s BYN| %15s BYN";
+    public static String STATEMENT_PATH = "YOUR_ABSOLUTE_PATH/%s.txt";  //Insert your absolute path here
 }

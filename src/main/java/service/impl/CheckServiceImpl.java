@@ -12,9 +12,7 @@ import service.FileService;
 import utils.constants.CheckConstants;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-import static utils.constants.CheckConstants.CHECK_TEMPLATE_ENG;
 import static utils.constants.CheckConstants.CHECK_TEMPLATE_RU;
 import static utils.constants.PatternConstants.DATE_TIME_PATH_PATTERN;
 
@@ -32,6 +30,7 @@ public class CheckServiceImpl implements CheckService {
         );
         fileService.formTxt(path, check);
     }
+
     private String buildCheck(Transaction transaction) {
         Bank bankFrom;
         Bank bankTo;

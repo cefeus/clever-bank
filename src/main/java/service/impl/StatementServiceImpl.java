@@ -3,6 +3,7 @@ package service.impl;
 import dto.StatementDto;
 import exception.AccountNotFoundException;
 import exception.BankNotFoundException;
+import exception.TransactionsNotFoundException;
 import exception.UserNotFoundException;
 import lombok.val;
 import model.*;
@@ -24,9 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static utils.constants.CheckConstants.*;
-import static utils.constants.CheckConstants.TRANSACTION_STATEMENT_TEMPLATE_FOOTER;
 import static utils.constants.PatternConstants.*;
-import static utils.constants.PatternConstants.DATE_PATTERN;
 
 public class StatementServiceImpl implements StatementService {
 
@@ -70,7 +69,7 @@ public class StatementServiceImpl implements StatementService {
 
         var transactionHistoryStatement = buildStatementHeader(stmtDto, acc, user, bank);
 
-        transactionHistoryStatement.append(TRANSACTION_STATEMENT_TEMPLATE_BODY);
+        transactionHistoryStatement.append(TRANSACTION_HISTORY_STATEMENT_TEMPLATE_BODY);
 
         addTransactionHistoryStatementFooter(
                 transactionHistoryStatement,
@@ -80,6 +79,26 @@ public class StatementServiceImpl implements StatementService {
                 stmtDto);
 
         return transactionHistoryStatement.toString();
+    }
+
+    public String buildMoneyFlowStatement(StatementDto stmtDto, Account acc, User user, Bank bank) {
+
+        var transactionMoneyFlowStatement = buildStatementHeader(stmtDto, acc, user, bank);
+
+        transactionMoneyFlowStatement.append(MONEY_FLOW_STATEMENT_TEMPLATE_BODY);
+
+        val income = transactionRepo.getIncome(stmtDto)
+                .orElseThrow(() -> new TransactionsNotFoundException("Транзакции не найдены"));
+
+        val outcome = transactionRepo.getOutCome(stmtDto)
+                .orElseThrow(() -> new TransactionsNotFoundException("Транзакции не найдены"));
+
+        transactionMoneyFlowStatement
+                .append(String.format(MONEY_FLOW_STATEMENT_TEMPLATE_FOOTER,
+                        income,
+                        outcome));
+
+        return transactionMoneyFlowStatement.toString();
     }
 
     private StringBuilder buildStatementHeader(StatementDto stmtDto, Account acc, User user, Bank bank) {

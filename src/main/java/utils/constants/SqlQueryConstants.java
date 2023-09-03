@@ -27,4 +27,13 @@ public class SqlQueryConstants {
                         Inner join clever_bank.users ON clever_bank.accounts.owner_id = clever_bank.users.id\s
                         WHERE clever_bank.transactions.transaction_type = 'TRANSFER' and clever_bank.transactions.acc_to= ?
                         """;
+
+    public static String SQL_GET_INCOME = """
+            SELECT SUM(clever_bank.transactions.amount) as UHOD from clever_bank.transactions WHERE clever_bank.transactions.acc_from = ? 
+            AND (clever_bank.transactions.transaction_type = 'WITHDRAW' or clever_bank.transactions.transaction_type = 'TRANSFER') AND clever_bank.transactions.created_at BETWEEN DATE(?) AND  DATE(?) 
+            """;
+    public static String SQL_GET_OUTCOME = """
+            SELECT SUM(clever_bank.transactions.amount) as PRIHOD from clever_bank.transactions WHERE clever_bank.transactions.acc_to = ? 
+            AND (clever_bank.transactions.transaction_type = 'DEPOSIT' or clever_bank.transactions.transaction_type = 'TRANSFER') AND clever_bank.transactions.created_at BETWEEN DATE(?) AND  DATE(?)
+            """;
 }

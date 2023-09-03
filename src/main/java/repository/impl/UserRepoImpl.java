@@ -39,6 +39,7 @@ public class UserRepoImpl implements UserRepo {
             throw new RuntimeException(e);
         }
     }
+
     private User buildUser(ResultSet rs) throws SQLException {
         return User.builder()
                 .id(UUID.fromString(rs.getString("id")))

@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static utils.constants.SqlQueryConstants.*;
-import static utils.constants.SqlQueryConstants.SQL_GET_ALL_TRANSFER_TRANSACTIONS_TO;
 
 public class TransactionRepoImpl implements TransactionRepo {
     private final Connection connection;
@@ -60,6 +59,7 @@ public class TransactionRepoImpl implements TransactionRepo {
             throw new RuntimeException(e);
         }
     }
+
     //TODO: Optional
     @Override
     public Map<UUID, String> findAllTransferTransactionsFrom(String number) {
@@ -83,6 +83,43 @@ public class TransactionRepoImpl implements TransactionRepo {
         }
     }
 
+    @Override
+    public Optional<String> getIncome(StatementDto dto) {
+        try (var statement = connection.prepareStatement(
+                SQL_GET_INCOME,
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_UPDATABLE)) {
+            statement.setString(1, dto.getAccNumber());
+            statement.setDate(2, Date.valueOf(dto.getDateFrom()));
+            statement.setDate(3, Date.valueOf(dto.getDateTo()));
+            try (var rs = statement.executeQuery()) {
+                return rs.first()
+                        ? Optional.of(rs.getString("uhod"))
+                        : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<String> getOutCome(StatementDto dto) {
+        try (var statement = connection.prepareStatement(
+                SQL_GET_OUTCOME,
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_UPDATABLE)) {
+            statement.setString(1, dto.getAccNumber());
+            statement.setDate(2, Date.valueOf(dto.getDateFrom()));
+            statement.setDate(3, Date.valueOf(dto.getDateTo()));
+            try (var rs = statement.executeQuery()) {
+                return rs.first()
+                        ? Optional.of(rs.getString("prihod"))
+                        : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     //TODO: Optional
@@ -118,8 +155,6 @@ public class TransactionRepoImpl implements TransactionRepo {
                 .type(TransactionType.valueOf(rs.getString("transaction_type")))
                 .build();
     }
-
-
 
 
 }

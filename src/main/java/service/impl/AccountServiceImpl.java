@@ -140,6 +140,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
     }
+
     private Transaction buildTransaction(AccountDto accDto, TransactionType type) {
         return Transaction.builder()
                 .id(UUID.randomUUID())

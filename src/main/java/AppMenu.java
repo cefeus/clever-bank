@@ -111,7 +111,7 @@ public class AppMenu {
         return StatementDto.builder()
                 .accNumber(number)
                 .dateFrom(start)
-                .dateTo(end)
+                .dateTo(end.plusDays(1))
                 .type(TRANSACTIONS_HISTORY)
                 .build();
     }
