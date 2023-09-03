@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static utils.constants.SqlQueryConstants.*;
-
+/**
+ * Класс, который взаимодействует с таблицей "Transactions"
+ */
 public class TransactionRepoImpl implements TransactionRepo {
     private final Connection connection;
 
@@ -25,6 +27,12 @@ public class TransactionRepoImpl implements TransactionRepo {
         }
     }
 
+    /**
+     * метод для сохранения сущности "Транзакция" в БД
+     * @param transaction - сущность "Транзакция"
+     * @return int для проверки выполнения запроса
+     * @throws SQLException
+     */
     @Override
     public int saveTransaction(Transaction transaction) throws SQLException {
         try (var statement = connection.prepareStatement(SQL_SAVE_TRANSACTION)) {
@@ -38,6 +46,12 @@ public class TransactionRepoImpl implements TransactionRepo {
         }
     }
 
+    /**
+     * метод для нахождения всех транзакций с участием передаваемого номера счета
+     * и в определенном временном интервалле
+     * @param dto - сущность, содержащая временной интервалл и номер счета
+     * @return список транзакций
+     */
     @Override
     public List<Transaction> findAllTransactions(StatementDto dto) {
         try (var statement = connection.prepareStatement(
@@ -60,7 +74,11 @@ public class TransactionRepoImpl implements TransactionRepo {
         }
     }
 
-    //TODO: Optional
+    /**
+     * метод для нахождения всех "TRANSFER" транзакций, где номер счета выступает в качестве отправителя
+     * @param number - номер счета
+     * @return Map<UUID, String>, где ключ - uuid транзакции,  значение - ФИО отправителя
+     */
     @Override
     public Map<UUID, String> findAllTransferTransactionsFrom(String number) {
         try (var statement = connection.prepareStatement(
@@ -83,46 +101,11 @@ public class TransactionRepoImpl implements TransactionRepo {
         }
     }
 
-    @Override
-    public Optional<String> getIncome(StatementDto dto) {
-        try (var statement = connection.prepareStatement(
-                SQL_GET_INCOME,
-                ResultSet.TYPE_SCROLL_INSENSITIVE,
-                ResultSet.CONCUR_UPDATABLE)) {
-            statement.setString(1, dto.getAccNumber());
-            statement.setDate(2, Date.valueOf(dto.getDateFrom()));
-            statement.setDate(3, Date.valueOf(dto.getDateTo()));
-            try (var rs = statement.executeQuery()) {
-                return rs.first()
-                        ? Optional.of(rs.getString("uhod"))
-                        : Optional.empty();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Optional<String> getOutCome(StatementDto dto) {
-        try (var statement = connection.prepareStatement(
-                SQL_GET_OUTCOME,
-                ResultSet.TYPE_SCROLL_INSENSITIVE,
-                ResultSet.CONCUR_UPDATABLE)) {
-            statement.setString(1, dto.getAccNumber());
-            statement.setDate(2, Date.valueOf(dto.getDateFrom()));
-            statement.setDate(3, Date.valueOf(dto.getDateTo()));
-            try (var rs = statement.executeQuery()) {
-                return rs.first()
-                        ? Optional.of(rs.getString("prihod"))
-                        : Optional.empty();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    //TODO: Optional
+    /**
+     * метод для нахождения всех "TRANSFER" транзакций, где номер счета выступает в качестве получателя
+     * @param number - номер счета
+     * @return Map<UUID, String>, где ключ - uuid транзакции,  значение - ФИО получателя
+     */
     @Override
     public Map<UUID, String> findAllTransferTransactionsTo(String number) {
         try (var statement = connection.prepareStatement(
@@ -145,6 +128,65 @@ public class TransactionRepoImpl implements TransactionRepo {
         }
     }
 
+    /**
+     * метод получения общей суммы прихода средств для соответствующего номера счета
+     * и в определенном временном интервалле
+     * @param dto - сущность, содержащая временной интервалл и номер счета
+     * @return если сумма была найдена - Optional<String>
+     *     в противном случае Optional.empty()
+     */
+    @Override
+    public Optional<String> getIncome(StatementDto dto) {
+        try (var statement = connection.prepareStatement(
+                SQL_GET_INCOME,
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_UPDATABLE)) {
+            statement.setString(1, dto.getAccNumber());
+            statement.setDate(2, Date.valueOf(dto.getDateFrom()));
+            statement.setDate(3, Date.valueOf(dto.getDateTo()));
+            try (var rs = statement.executeQuery()) {
+                return rs.first()
+                        ? Optional.of(rs.getString("uhod"))
+                        : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * метод получения общей суммы ухода средств для соответствующего номера счета
+     * и в определенном временном интервалле
+     * @param dto - сущность, содержащая временной интервалл и номер счета
+     * @return если сумма была найдена - Optional<String>
+     *     в противном случае Optional.empty()
+     */
+    @Override
+    public Optional<String> getOutCome(StatementDto dto) {
+        try (var statement = connection.prepareStatement(
+                SQL_GET_OUTCOME,
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_UPDATABLE)) {
+            statement.setString(1, dto.getAccNumber());
+            statement.setDate(2, Date.valueOf(dto.getDateFrom()));
+            statement.setDate(3, Date.valueOf(dto.getDateTo()));
+            try (var rs = statement.executeQuery()) {
+                return rs.first()
+                        ? Optional.of(rs.getString("prihod"))
+                        : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * метод для создания сущности "Транзакция", путем извлечения нужных параметров из ResultSet
+     * @param rs - ResultSet
+     * @return сущность "Транзакция"
+     * @throws SQLException
+     */
     private Transaction buildTransaction(ResultSet rs) throws SQLException {
         return Transaction.builder()
                 .id(UUID.fromString(rs.getString("id")))

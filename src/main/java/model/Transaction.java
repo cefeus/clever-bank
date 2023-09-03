@@ -5,7 +5,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
-
+/**
+ * Класс, который иллюстрирует сущность "Транзакция" в БД
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

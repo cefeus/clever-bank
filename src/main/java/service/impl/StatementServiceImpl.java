@@ -26,7 +26,9 @@ import java.util.UUID;
 
 import static utils.constants.CheckConstants.*;
 import static utils.constants.PatternConstants.*;
-
+/**
+ * Класс для формирования выписки
+ */
 public class StatementServiceImpl implements StatementService {
 
     private AccountRepo accRepo = new AccountRepoImpl();
@@ -35,6 +37,11 @@ public class StatementServiceImpl implements StatementService {
     private TransactionRepo transactionRepo = new TransactionRepoImpl();
     private FileService fileService = new FileServiceImpl();
 
+    /**
+     * метод, для создания выписки по транзакциям за определенный момент времени
+     * и передачи для дальнейшей печати
+     * @param statementDto - сущность содержащая необходимую информацию для создания выписки
+     */
     @Override
     public void createTransactionStatement(StatementDto statementDto) {
         //validation
@@ -55,10 +62,26 @@ public class StatementServiceImpl implements StatementService {
                         LocalDateTime.now().format(DATE_TIME_PATH_PATTERN)), statement);
     }
 
+    /**
+     * метод, который определяет какого вида выписку нужно создать
+     * @param stmtDto - сущность содержащая необходимую информацию для создания выписки
+     * @param acc - сущность Счет
+     * @param user - сущность Пользователь
+     * @param bank - сущность Банк
+     * @return String - выписка
+     */
     private String buildStatement(StatementDto stmtDto, Account acc, User user, Bank bank) {
         return stmtDto.getType().statementAlgo.apply(this, stmtDto, acc, user, bank);
     }
 
+    /**
+     * метод, формирующий выписку по транзакциям для определенного номера счета
+     * @param stmtDto - сущность содержащая необходимую информацию для создания выписки
+     * @param acc - сущность Счет
+     * @param user - сущность Пользователь
+     * @param bank - сущность Банк
+     * @return String - выписка
+     */
     public String buildTransactionHistoryStatement(StatementDto stmtDto, Account acc, User user, Bank bank) {
         Map<UUID, String> allTransferTransactionsFrom = transactionRepo
                 .findAllTransferTransactionsFrom(stmtDto.getAccNumber());
@@ -81,6 +104,15 @@ public class StatementServiceImpl implements StatementService {
         return transactionHistoryStatement.toString();
     }
 
+    /**
+     * метод, формирующий выписку по приходу/уходу денежных средств для определенного номера счета
+     * @param stmtDto - сущность содержащая необходимую информацию для создания выписки
+     * @param acc - сущность Счет
+     * @param user - сущность Пользователь
+     * @param bank - сущность Банк
+     * @return String - выписка
+     */
+
     public String buildMoneyFlowStatement(StatementDto stmtDto, Account acc, User user, Bank bank) {
 
         var transactionMoneyFlowStatement = buildStatementHeader(stmtDto, acc, user, bank);
@@ -101,6 +133,14 @@ public class StatementServiceImpl implements StatementService {
         return transactionMoneyFlowStatement.toString();
     }
 
+    /**
+     * метод для формирования верхней части выписки
+     * @param stmtDto - сущность содержащая необходимую информацию для создания выписки
+     * @param acc - сущность Счет
+     * @param user - сущность Пользователь
+     * @param bank - сущность Банк * @param stmtDto
+     * @return StringBuilder - верхняя часть выписки
+     */
     private StringBuilder buildStatementHeader(StatementDto stmtDto, Account acc, User user, Bank bank) {
         return new StringBuilder()
                 .append(String.format(TRANSACTION_STATEMENT_TEMPLATE_HEADER,
@@ -115,6 +155,15 @@ public class StatementServiceImpl implements StatementService {
                 ));
     }
 
+
+    /**
+     * метод для формирования нижней части выписки по транзакциям
+     * @param transactionHistoryStatement - верхняя и средняя часть выписки
+     * @param allTransferTransactionsFrom - множество "TRANSFER" транзакций, где номер счета выступает в качестве отправителя
+     * @param allTransferTransactionsTo - множество "TRANSFER" транзакций, где номер счета выступает в качестве получателя
+     * @param transactions - список всех транзакций для определенного номера счета и за определенный интервалл времени
+     * @param stmtDto - сущность содержащая необходимую информацию для создания выписки
+     */
     private void addTransactionHistoryStatementFooter(StringBuilder transactionHistoryStatement,
                                                       Map<UUID, String> allTransferTransactionsFrom,
                                                       Map<UUID, String> allTransferTransactionsTo,

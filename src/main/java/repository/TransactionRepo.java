@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ * Интерфейс для декларации необходимых методов для работы с сущностью "Транзакция"
+ */
 public interface TransactionRepo {
     int saveTransaction(Transaction transaction) throws SQLException;
     List<Transaction> findAllTransactions(StatementDto dto);

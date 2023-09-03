@@ -16,6 +16,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
+/**
+ * класс для выполнения запроса по формированию выписки приход/уход
+ */
 @WebServlet("/statements/money-flow")
 public class MoneyFlowController extends HttpServlet {
     private StatementService statementService = new StatementServiceImpl();
@@ -26,6 +29,11 @@ public class MoneyFlowController extends HttpServlet {
         System.out.println("Success");
     }
 
+    /**
+     * метод формирования StatementDto из параметров запроса
+     * @param req - запрос
+     * @return StatementDto
+     */
     private StatementDto getStatementDtoFromRequest(HttpServletRequest req) {
         var accNumber = req.getParameter("accNumber");
         var dateFrom = parseDate(req.getParameter("dateFrom"))

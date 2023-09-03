@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import static utils.constants.SqlQueryConstants.*;
 
+/**
+ * Класс, который взаимодействует с таблицей "Accounts"
+ */
 public class AccountRepoImpl implements AccountRepo {
     private final Connection connection;
 
@@ -23,6 +26,12 @@ public class AccountRepoImpl implements AccountRepo {
         }
     }
 
+    /**
+     * метод, который находит сущность счет по номеру счета
+     * @param number - номер счета
+     * @return в случае, если счет был найден - возвращает Optional<Account>
+     *     в противном - Optional.empty()
+     */
     @Override
     public Optional<Account> findAccByNumber(String number) {
         try (var statement = connection.prepareStatement(
@@ -41,6 +50,12 @@ public class AccountRepoImpl implements AccountRepo {
         }
     }
 
+    /**
+     * обновляет баланс сущности "Счет"
+     * @param acc - сущность "Счет", с ранее сформированным балансом
+     * @return int для проверки выполнения запроса
+     * @throws SQLException
+     */
     @Override
     public int updateAccBalance(Account acc) throws SQLException {
         try (var statement = connection.prepareStatement(SQL_UPDATE_ACC_BALANCE)) {
@@ -49,6 +64,10 @@ public class AccountRepoImpl implements AccountRepo {
             return statement.executeUpdate();
         }
     }
+
+    /**
+     * метод начисления процентов
+     */
     @Override
     public void accrueInterest() {
         try (var statement = connection.prepareStatement(SQL_ACCRUE_PERCENT)) {
@@ -59,6 +78,12 @@ public class AccountRepoImpl implements AccountRepo {
         }
     }
 
+    /**
+     * метод для создания сущности "Счет", путем извлечения нужных параметров из ResultSet
+     * @param rs - ResultSet
+     * @return сущность "Счет"
+     * @throws SQLException
+     */
     private Account buildAcc(ResultSet rs) throws SQLException {
         return Account.builder()
                 .number(rs.getString("number"))

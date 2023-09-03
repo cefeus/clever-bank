@@ -6,6 +6,9 @@ import model.StatementType;
 
 import java.time.LocalDate;
 
+/**
+ * Класс для передачи параметров, связанных с формированием выписки
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

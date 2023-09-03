@@ -20,6 +20,9 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Класс для выполнения манипуляций со счетом
+ */
 public class AccountServiceImpl implements AccountService {
     private final TransactionManager transactionManager = new TransactionManager();
     private final AccountValidator accValidator = new AccountValidator();
@@ -30,6 +33,10 @@ public class AccountServiceImpl implements AccountService {
     private final Lock lock2 = new ReentrantLock();
     private boolean isTransfer = false;
 
+    /**
+     * метод для пополнения счета
+     * @param accDto - сущность, содержащая сумму и номер счета
+     */
     @Override
     public void deposit(AccountDto accDto) {
         try {
@@ -64,6 +71,10 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    /**
+     * метод для снятия со счета
+     * @param accDto - сущность, содержащая сумму и номер счета
+     */
     @Override
     public void withdraw(AccountDto accDto) {
         try {
@@ -100,6 +111,10 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * метод для пополнения перевода со счета на счет
+     * @param accDto - сущность, содержащая сумму и номера счетов
+     */
     @Override
     public void transfer(AccountDto accDto) {
         try {
@@ -112,7 +127,7 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             lock1.lock();
-            lock2.lock();  //TODO ALARM
+            lock2.lock();
             isTransfer = true;
             transactionManager.startTransaction();
             withdraw(accDto);
@@ -141,6 +156,12 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    /**
+     * метод для формирования сущности Транзакция
+     * @param accDto - сущность, содержащая сумму и номера счетов
+     * @param type - сущность, содержащая тип транзакции
+     * @return Transaction
+     */
     private Transaction buildTransaction(AccountDto accDto, TransactionType type) {
         return Transaction.builder()
                 .id(UUID.randomUUID())

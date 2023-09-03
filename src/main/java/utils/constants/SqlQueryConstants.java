@@ -2,7 +2,9 @@ package utils.constants;
 
 import lombok.experimental.UtilityClass;
 import utils.PropertiesUtil;
-
+/**
+ * Класс для хранения sql запросов
+ */
 @UtilityClass
 public class SqlQueryConstants {
     public static String SQL_UPDATE_ACC_BALANCE = "UPDATE clever_bank.accounts SET balance = ? WHERE number = ?";

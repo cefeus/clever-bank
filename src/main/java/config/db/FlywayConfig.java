@@ -8,6 +8,9 @@ import utils.PropertiesUtil;
 import static utils.constants.DatabaseConstants.*;
 import static utils.constants.FlywayConstants.MIGRATION_LOCATION;
 
+/**
+ * Класс, для конфигурации миграций
+ */
 public class FlywayConfig {
     public Configuration config(){
         var config = new FluentConfiguration();
