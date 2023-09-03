@@ -1,7 +1,9 @@
 package model;
 
 import lombok.*;
-
+/**
+ * Класс, который иллюстрирует сущность "Банк" в БД
+ */
 @Getter
 @Setter
 @Builder

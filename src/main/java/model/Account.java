@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Класс, который иллюстрирует сущность "Аккаунт" в БД
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

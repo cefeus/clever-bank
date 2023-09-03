@@ -5,6 +5,9 @@ import validator.AccountValidator;
 
 import java.util.Set;
 
+/**
+ * Класс содержащий перечисления полей по которым нужно сделать валидацию
+ */
 public enum AccountFieldValidation {
     NUMBER(AccountValidator::validateNumber),
     AMOUNT(AccountValidator::validateAmount);
@@ -15,6 +18,12 @@ public enum AccountFieldValidation {
         this.consumer = consumer;
     }
 
+    /**
+     * метод для передачи параметров консъюмеру
+     * @param validator - класс где реализуются методы валидации
+     * @param accDto
+     * @param messages - множесто содержащее сообщения об ошибках
+     */
     public void consume(AccountValidator validator, AccountDto accDto, Set<String> messages){
         consumer.accept(validator, accDto, messages);
     }

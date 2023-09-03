@@ -9,6 +9,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Класс для начисления процентов
+ */
 @NoArgsConstructor
 public class AccrualScheduler {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

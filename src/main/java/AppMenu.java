@@ -13,30 +13,34 @@ import java.util.Scanner;
 
 import static model.StatementType.TRANSACTIONS_HISTORY;
 
+/**
+ * класс для взаимодействия с пользователем
+ */
 public class AppMenu {
     private final Scanner sc = new Scanner(System.in);
     private final AccountService accService = new AccountServiceImpl();
     private final StatementService stmtService = new StatementServiceImpl();
     private String choice = Strings.EMPTY;
 
+    /**
+     * основной метод, который запускает стартовое меню
+     */
     public void start() {
         while (true) {
             System.out.println("\n-------------------");
             System.out.println("Clever Bank");
             System.out.println("-------------------\n");
             System.out.println("1. Платежи");
-            System.out.println("2. Панель управления");
-            System.out.println("3. Получить выписку по транзакциям");
-            System.out.println("4. Выход");
+            System.out.println("2. Получить выписку по транзакциям");
+            System.out.println("3. Выход");
             System.out.print("\nEnter your choice: ");
 
             choice = sc.next();
 
             switch (choice) {
                 case "1" -> accOperations();
-                case "2" -> System.out.println("Second case");
-                case "3" -> transactionStatement();
-                case "4" -> {
+                case "2" -> transactionStatement();
+                case "3" -> {
                     return;
                 }
                 default -> System.out.println("Wrong input\n");
@@ -44,6 +48,9 @@ public class AppMenu {
         }
     }
 
+    /**
+     * метод для выбора операций со счетом
+     */
     private void accOperations() {
         System.out.println("Выберите операцию:\n");
         System.out.println("1. Пополнение счета\n");
@@ -62,6 +69,9 @@ public class AppMenu {
         }
     }
 
+    /**
+     * метод для формирование выписки по транзакциям за определенный промежуток времени
+     */
     private void transactionStatement() {
         System.out.println("Номер счета:\n");
         val number = sc.next();
@@ -81,9 +91,15 @@ public class AppMenu {
         }
 
     }
+
+    /**
+     * метод для формирования AccountDto
+     * @param choice - пользовательский выбор
+     * @return AccountDto
+     */
     private AccountDto getAccDto(String choice) {
 
-        System.out.println("Номер первого счета:\n");
+        System.out.println("Номер счета:\n");
         val number = sc.next();
         System.out.println("Введите сумму:\n");
         val amount = sc.nextBigDecimal();
@@ -97,6 +113,12 @@ public class AppMenu {
         return accDto;
     }
 
+    /**
+     * метод для формирования StatementDto
+     * @param choice - пользовательский выбор
+     * @param number - номер счета
+     * @return StatementDto
+     */
     private StatementDto getStatementDto(String choice, String number) {
         LocalDate start;
         LocalDate end = LocalDate.now();

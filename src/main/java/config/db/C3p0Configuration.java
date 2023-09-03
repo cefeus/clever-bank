@@ -9,6 +9,9 @@ import java.sql.SQLException;
 
 import static utils.constants.DatabaseConstants.*;
 
+/**
+ * Конфигурационный класс для пула соединений
+ */
 public class C3p0Configuration {
     private final ComboPooledDataSource connPool;
 
@@ -17,6 +20,9 @@ public class C3p0Configuration {
         loadProperties();
     }
 
+    /**
+     * загружает необходимые параметры для пула соединений
+     */
     private void loadProperties() {
         connPool.setJdbcUrl(PropertiesUtil.getPropertyByKey(URL));
         connPool.setUser(PropertiesUtil.getPropertyByKey(USERNAME));
@@ -28,6 +34,11 @@ public class C3p0Configuration {
         }
     }
 
+    /**
+     * метод, который открывает соединение
+     * @return Connection
+     * @throws SQLException
+     */
     public Connection open() throws SQLException {
         return connPool.getConnection();
     }

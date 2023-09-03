@@ -1,7 +1,9 @@
 package utils.constants;
 
 import lombok.experimental.UtilityClass;
-
+/**
+ * Утилитный класс для чека
+ */
 @UtilityClass
 public class CheckConstants {
     public static final String CURRENT_DIR = System.getProperty("user.dir");

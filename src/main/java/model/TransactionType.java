@@ -1,7 +1,9 @@
 package model;
 
 import lombok.Getter;
-
+/**
+ *  Класс, представляющий собой перечисление типов транзакций
+ */
 @Getter
 public enum TransactionType {
     DEPOSIT("Пополнение"),

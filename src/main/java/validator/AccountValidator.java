@@ -16,8 +16,14 @@ import static utils.constants.ExceptionMessagesConstants.INCORRECT_ACC_AMOUNT;
 import static utils.constants.ExceptionMessagesConstants.INCORRECT_ACC_NUMBER;
 import static utils.constants.PatternConstants.ACC_NUMBER_PATTERN;
 
+/**
+ * класс реализующий валидацию счета
+ */
 public class AccountValidator {
-
+    /**
+     * метод для валидации полей счета
+     * @param accDto
+     */
     public void validate(AccountDto accDto) {
         Set<String> exceptionMessages = new HashSet<>();
 
@@ -29,6 +35,11 @@ public class AccountValidator {
 
     }
 
+    /**
+     * етод для валидации номера счета
+     * @param accDto
+     * @param exceptionMessages - множество сообщений об ошибках
+     */
     public void validateNumber(AccountDto accDto, Set<String> exceptionMessages) {
         val accFrom = accDto.getAccFrom();
         val accTo = accDto.getAccTo();
@@ -46,6 +57,11 @@ public class AccountValidator {
         }
     }
 
+    /**
+     * етод для валидации суммы счета
+     * @param accDto
+     * @param exceptionMessages - множество сообщений об ошибках
+     */
     public void validateAmount(AccountDto accDto, Set<String> exceptionMessages) {
         val amount = accDto.getAmount();
 

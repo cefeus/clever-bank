@@ -1,5 +1,8 @@
 package config.db;
 
+/**
+ * Создание синглтона соединения с БД
+ */
 public class ConnectionSingleton {
     private static volatile C3p0Configuration connection;
 

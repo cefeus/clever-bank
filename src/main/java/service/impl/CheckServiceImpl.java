@@ -15,12 +15,18 @@ import java.time.LocalDateTime;
 
 import static utils.constants.CheckConstants.CHECK_TEMPLATE_RU;
 import static utils.constants.PatternConstants.DATE_TIME_PATH_PATTERN;
-
+/**
+ * Класс для формирования чека
+ */
 public class CheckServiceImpl implements CheckService {
 
     private final BankRepo bankRepo = new BankRepoImpl();
     private final FileService fileService = new FileServiceImpl();
 
+    /**
+     * метод формирования чека и печати в формате .txt
+     * @param transaction - сущность Транзакция, на основании которой формируется чек
+     */
     @Override
     public void formCheck(Transaction transaction) {
         val check = buildCheck(transaction);
@@ -31,6 +37,10 @@ public class CheckServiceImpl implements CheckService {
         fileService.formTxt(path, check);
     }
 
+    /**
+     * метод формирования чека
+     * @param transaction - сущность Транзакция, на основании которой формируется чек
+     */
     private String buildCheck(Transaction transaction) {
         Bank bankFrom;
         Bank bankTo;

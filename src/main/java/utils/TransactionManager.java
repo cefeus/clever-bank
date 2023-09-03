@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
+/**
+ * класс для управлением транзакций
+ */
 public class TransactionManager {
     private static Savepoint savepoint;
     private final Connection connection;

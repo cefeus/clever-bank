@@ -4,6 +4,10 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+
+/**
+ * Служит, в основном, как посредник между клиентом и сервисом
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

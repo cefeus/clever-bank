@@ -1,7 +1,10 @@
 package utils.constants;
 
 import lombok.experimental.UtilityClass;
-
+/**
+ * Класс для хранения параметров для БД
+ * (выступает посредником между .yaml и PropertiesUtil)
+ */
 @UtilityClass
 public class DatabaseConstants {
     public static String URL = "URL";
