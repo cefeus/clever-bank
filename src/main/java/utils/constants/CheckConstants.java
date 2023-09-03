@@ -30,17 +30,25 @@ public class CheckConstants {
             |Сумма:%38.2f BYN|
             |————————————————————————————————————————————————|  
             """;
-    public static String CHECK_PATH = "check/%s.pdf";
-    public static String STATEMENT_TEMPLATE = """
+    public static String CHECK_PATH = System.getProperty("user.dir") + "/check/%s.txt";
+    public static String TRANSFER_FROM = "Перевод от ";
+    public static String TRANSFER_TO = "Перевод ";
+    public static String TRANSACTION_STATEMENT_TEMPLATE_HEADER = """
+                                      Выписка
+                                       %-20s
             Клиент                     | %-30s
             Счет                       | %-20s
             Валюта                     | BYN
             Дата открытия              | %-20s
             Период                     | %-10s - %-10s
-            Дата и время формирования  | %-10s  %-10s
-            Остаток                    | %-20.2f BYN
+            Дата и время формирования  | %-10s 
+            Остаток                    | %-10.2f BYN
             """;
-    public static String STATEMENT_PATH = "statement/%s.pdf";
-    public static String MONEY_STATEMENT_PATH = "money-statement/%s.pdf";
-    public static String FONT_PATH = "fonts/er-kurier-1251.ttf";
+    public static String TRANSACTION_STATEMENT_TEMPLATE_BODY = """
+                 Дата      |          Примечани                     |     Количество     
+            -----------------------------------------------------------------------------
+            """;
+    public static String TRANSACTION_STATEMENT_TEMPLATE_FOOTER = "%15s|%40s|%15S";
+    public static String STATEMENT_PATH = System.getProperty("user.dir") + "/statement/%s.txt";
+    public static String MONEY_STATEMENT_PATH = "money-statement/%s.txt";
 }

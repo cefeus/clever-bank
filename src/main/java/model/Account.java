@@ -3,6 +3,7 @@ package model;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -10,10 +11,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode(of = "number")
 public class Account {
     private String number;
     private UUID ownerId;
     private BigDecimal balance;
     private Long bankId;
+    private LocalDateTime createdAt;
 }

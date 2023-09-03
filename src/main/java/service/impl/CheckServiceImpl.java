@@ -8,27 +8,30 @@ import org.apache.commons.lang3.StringUtils;
 import repository.BankRepo;
 import repository.impl.BankRepoImpl;
 import service.CheckService;
-import service.PdfService;
+import service.FileService;
 import utils.constants.CheckConstants;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static utils.constants.CheckConstants.CHECK_TEMPLATE_ENG;
+import static utils.constants.CheckConstants.CHECK_TEMPLATE_RU;
+import static utils.constants.PatternConstants.DATE_TIME_PATH_PATTERN;
 
 public class CheckServiceImpl implements CheckService {
 
     private final BankRepo bankRepo = new BankRepoImpl();
-    private final PdfService pdfService = new PdfServiceImpl();
+    private final FileService fileService = new FileServiceImpl();
 
     @Override
     public void formCheck(Transaction transaction) {
         val check = buildCheck(transaction);
-        DateTimeFormatter frmtr = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        val path = String.format(CheckConstants.CHECK_PATH, LocalDateTime.now().format(frmtr));
-        pdfService.formPdf(check, path);
+        val path = String.format(
+                CheckConstants.CHECK_PATH,
+                LocalDateTime.now().format(DATE_TIME_PATH_PATTERN)
+        );
+        fileService.formTxt(path, check);
     }
-
     private String buildCheck(Transaction transaction) {
         Bank bankFrom;
         Bank bankTo;
@@ -45,7 +48,7 @@ public class CheckServiceImpl implements CheckService {
                     .orElseThrow(() -> new BankNotFoundException("Bank not found"));
         }
         return String.format(
-                CHECK_TEMPLATE_ENG,
+                CHECK_TEMPLATE_RU,
                 transaction.getId().toString(),
                 transaction.getCreatedAt().toLocalDateTime(),
                 transaction.getCreatedAt(),
@@ -57,5 +60,4 @@ public class CheckServiceImpl implements CheckService {
                 transaction.getAmount()
         );
     }
-
 }
