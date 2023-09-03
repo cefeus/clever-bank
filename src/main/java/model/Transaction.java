@@ -15,7 +15,7 @@ public class Transaction {
     private UUID id;
     private String accFrom;
     private String accTo;
-    private String type;
+    private TransactionType type;
     private BigDecimal amount;
     private Timestamp createdAt;
 }

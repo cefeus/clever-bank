@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode(of = "number")
 public class Account {
     private String number;

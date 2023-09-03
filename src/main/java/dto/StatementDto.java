@@ -1,14 +1,14 @@
 package dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import model.StatementType;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 public class StatementDto {
     private String accNumber;

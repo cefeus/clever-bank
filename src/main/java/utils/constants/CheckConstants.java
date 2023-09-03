@@ -31,7 +31,7 @@ public class CheckConstants {
             |————————————————————————————————————————————————|  
             """;
     public static String CHECK_PATH = "check/%s.pdf";
-    public static String STATEMENT_TEMPLATE = """
+    public static String TRANSACTION_STATEMENT_TEMPLATE = """
             Κλθενς                     | %-30s
             Ρχες                       | %-20s
             Βΰλώςΰ                     | BYN

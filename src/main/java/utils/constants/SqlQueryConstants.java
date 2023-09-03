@@ -9,6 +9,6 @@ public class SqlQueryConstants {
     public static String SQL_GET_ACC_BY_NUMBER = "SELECT * FROM clever_bank.accounts WHERE number = ?";
 
     public static String SQL_GET_TRANSANSACTIONS_BY_ACC = "SELECT DISTINCT * FROM transactions WHERE acc_from = ? OR acc_to = ?";
-
+    public static String SQL_GET_USER_BY_ID = "SELECT * FROM clever_bank.users WHERE id = ?";
     public static String SQL_GET_BANK_BY_ACC_NUMBER = "SELECT * FROM clever_bank.accounts INNER JOIN clever_bank.banks ON clever_bank.accounts.bank_id = clever_bank.banks.id WHERE clever_bank.accounts.number = ?";
 }
