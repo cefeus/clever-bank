@@ -1,6 +1,7 @@
 package utils.constants;
 
 import lombok.experimental.UtilityClass;
+import utils.PropertiesUtil;
 
 @UtilityClass
 public class SqlQueryConstants {
@@ -8,6 +9,7 @@ public class SqlQueryConstants {
     public static String SQL_SAVE_TRANSACTION = "INSERT INTO clever_bank.transactions(id, acc_from, acc_to, transaction_type, amount, created_at) VALUES (?,?,?,?,?,?)";
     public static String SQL_GET_ACC_BY_NUMBER = "SELECT * FROM clever_bank.accounts WHERE number = ?";
     public static String SQL_GET_USER_BY_ID = "SELECT * FROM clever_bank.users WHERE id = ?";
+    public static String SQL_ACCRUE_PERCENT = String.format("Update clever_bank.accounts SET balance = balance + balance * %s, accrual_date = CURRENT_DATE WHERE accrual_date < NOW() - INTERVAL '30 days'", PropertiesUtil.getPropertyByKey("ACCRUE_PERSENT"));
     public static String SQL_GET_BANK_BY_ID = "SELECT * FROM clever_bank.banks WHERE id = ?";
     public static String SQL_GET_BANK_BY_ACC_NUMBER = "SELECT * FROM clever_bank.accounts INNER JOIN clever_bank.banks ON clever_bank.accounts.bank_id = clever_bank.banks.id WHERE clever_bank.accounts.number = ?";
     public static String SQL_GET_ALL_TRANSACTION = """
