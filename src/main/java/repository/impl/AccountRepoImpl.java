@@ -10,8 +10,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static utils.constants.SqlQueryConstants.SQL_GET_ACC_BY_NUMBER;
-import static utils.constants.SqlQueryConstants.SQL_UPDATE_ACC_BALANCE;
+import static utils.constants.SqlQueryConstants.*;
 
 public class AccountRepoImpl implements AccountRepo {
     private final Connection connection;
@@ -48,6 +47,15 @@ public class AccountRepoImpl implements AccountRepo {
             statement.setBigDecimal(1, acc.getBalance());
             statement.setString(2, acc.getNumber());
             return statement.executeUpdate();
+        }
+    }
+    @Override
+    public void accrueInterest() {
+        try (var statement = connection.prepareStatement(SQL_ACCRUE_PERCENT)) {
+            if (statement.executeUpdate() != 0) System.out.println("Проценты начислены\n");
+            else System.out.println("Начисление не требуется\n");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

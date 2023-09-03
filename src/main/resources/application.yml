@@ -8,7 +8,7 @@ SCHEMA: clever_bank
 #flyway
 MIGRATION_LOCATION: filesystem:src/main/resources/db/migration
 
-
+ACCRUE_PERSENT: 1
 
 
 #error-messages
